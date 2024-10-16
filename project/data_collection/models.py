@@ -65,3 +65,21 @@ class SubwayDailyTimeSlotPassengerDifference(models.Model):
 
     class Meta:
         db_table = "subway_daily_time_slot_passenger_difference"
+
+class SubwayAmenities(models.Model):
+    line_number = models.CharField(max_length=10)
+    station_name = models.CharField(max_length=20)
+    
+    culture_space = models.CharField(max_length=2)
+    wheelchair_lift = models.CharField(max_length=2)
+    meeting_place = models.CharField(max_length=2)
+    transfer_parking_lot = models.CharField(max_length=2)
+    bicycle_storage = models.CharField(max_length=2)
+    elevator = models.CharField(max_length=2)
+    train_reservation = models.CharField(max_length=2)
+    civil_service_machine = models.CharField(max_length=2)
+    exchange_kiosk = models.CharField(max_length=2)
+    nursing_room = models.CharField(max_length=2)
+
+    class Meta:
+        db_table = "subway_amenities"
