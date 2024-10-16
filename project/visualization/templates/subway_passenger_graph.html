@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>지하철 시간대별 승하차인원</title>
+</head>
+<br>
+<body>
+    <form method="post" id="subway-from">
+        {% csrf_token %}
+        {{ form.line }}
+        {{ form.sttn }}
+        <button type="submit">조회</button>
+    </form>
+
+
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+    {% if station.cultural_space %}<img src="/static/icons/01_cultural_space.png" width="40" height="40" alt="문화공간">{% endif %}
+    {% if station.wheelchair_lift %}<img src="/static/icons/02_wheelchair_lift.png" width="40" height="40" alt="휠체어리프트">{% endif %}
+    {% if station.meeting_spot %}<img src="/static/icons/03_meeting_spot.png" width="40" height="40" alt="만남의장소">{% endif %}
+    {% if station.parking_lot %}<img src="/static/icons/04_parking_lot.png" width="40" height="40" alt="환승주차장">{% endif %}
+    {% if station.bike_rack %}<img src="/static/icons/05_bike_rack.png" width="40" height="40" alt="자전거보관소">{% endif %}
+    {% if station.elevator %}<img src="/static/icons/06_elevator.png" width="40" height="40" alt="엘리베이터">{% endif %}
+    {% if station.ticket_office %}<img src="/static/icons/07_ticket_office.png" width="40" height="40" alt="기차예매역">{% endif %}
+    {% if station.civil_service %}<img src="/static/icons/08_civil_service.png" width="40" height="40" alt="무인민원발급기">{% endif %}
+    {% if station.currency_exchange %}<img src="/static/icons/09_currency_exchange.png" width="40" height="40" alt="환전키오스크">{% endif %}
+    {% if station.nursing_room %}<img src="/static/icons/10_nursing_room.png" width="40" height="40" alt="수유실">{% endif %}
+    {% if graph %}
+        <img src="{{ graph }}" alt="승하차 인원수 그래프">
+    {% endif %}
+</body>
+</html>
