@@ -1,8 +1,9 @@
 from django.shortcuts import render
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import SubwayMonthlyTimeSlotPassengerCounts
-from .serializers import SubwayPassengerCountSerializer
+from .models import SubwayMonthlyTimeSlotPassengerCounts, SubwayDailyTimeSlotPassengerDifference
+from .serializers import SubwayPassengerCountSerializer, SubwayPassengerDifferenceSerializer
 
 
 class SubwayMonthlyPassengerCounterListView(APIView):
@@ -23,3 +24,17 @@ class SubwayMonthlyPassengerCounterListView(APIView):
         serializer = SubwayPassengerCountSerializer(queryset, many=True)
 
         return Response(serializer.data[0])
+
+class SubwayDailyPassengerDifferenceView(APIView):
+    def get(self, request, date, line_number, station_name, time_slot):
+        try:
+            data = SubwayDailyTimeSlotPassengerDifference.objects.get(
+                date=date,
+                line_number=line_number,
+                station_name=station_name,
+                time_slot=time_slot
+            )
+            serializer = SubwayPassengerDifferenceSerializer(data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except SubwayDailyTimeSlotPassengerDifference.DoesNotExist:
+            return Response({"detail":"Not Found"}, status=status.HTTP_404_NOT_FOUND)
