@@ -6,7 +6,7 @@ class Command(BaseCommand):
     help = 'Load data from CSV file(data3) into the Subway Daily Time Slot Passenger Difference model'
 
     def handle(self, *arg, **kwargs):
-        csv_file_path = '여기에 파일 경로 입력'
+        csv_file_path = 'Data3.csv'
         df = pd.read_csv(csv_file_path, encoding='cp949')
         l = len(df)
         self.stdout.write("Data reading complete")
