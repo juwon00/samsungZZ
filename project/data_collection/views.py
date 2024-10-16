@@ -42,9 +42,9 @@ class DegreeOfSubwayCongestionListView(APIView):
         
         serializer = DegreeOfSubwayCongestionSerializer(queryset, many=True)
 
-        return Response(serializer.data[0])
+        return Response(serializer.data)
 
-      
+
 class SubwayDailyPassengerDifferenceView(APIView):
     def get(self, request, date, line_number, station_name, time_slot):
         try:
