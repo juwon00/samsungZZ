@@ -6,25 +6,26 @@ from webdriver_manager.chrome import ChromeDriverManager
 import os
 import time
 
-from collections import deque, defaultdict
+from collections import deque
 
 class StationEdgeScraper :
-    def __init__(self, start_url) :
-        self.base_url = start_url
+    def __init__(self) :
         options = webdriver.ChromeOptions()
         # options.add_argument("--headless")  # Run browser in headless mode
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         
-        self.edges = defaultdict(list)
+        self.edges = dict()
         
-    def get_edges(self) :
-        self.driver.get(self.base_url)
+    def get_edges(self, start_url) :
+        self.driver.get(start_url)
         self.driver.implicitly_wait(5)
         
         name = self.__get_current_station_name()
-        q = deque([(name, self.base_url)])
+        q = deque([(name, start_url)])
         while q :
             cur_station, cur_url = q.popleft()
+            if cur_station not in self.edges :
+                self.edges[cur_station] = []
             if self.driver.current_url != cur_url :
                 self.driver.get(cur_url)
                 self.driver.implicitly_wait(5)
