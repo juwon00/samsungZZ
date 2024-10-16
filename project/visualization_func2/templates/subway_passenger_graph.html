@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>지하철 시간대별 승하차인원</title>
+</head>
+<br>
+<body>
+    <form method="post" id="subway-from">
+        {% csrf_token %}
+        {{ form.line }}
+        {{ form.sttn }}
+        <button type="submit">조회</button>
+    </form>
+
+
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+    {% if graph %}
+        <img src="{{ graph }}" alt="승하차 인원수 그래프">
+    {% endif %}
+</body>
+</html>
