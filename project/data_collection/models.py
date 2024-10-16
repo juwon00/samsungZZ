@@ -55,3 +55,13 @@ class SubwayMonthlyTimeSlotPassengerCounts(models.Model):
 
     class Meta:
         db_table = "subway_monthly_time_slot_passenger_counts"
+
+
+class SubwayStationLatLng(models.Model):
+    route_name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    class Meta:
+        db_table = "subway_station_lat_lng"

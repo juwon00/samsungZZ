@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import SubwayMonthlyTimeSlotPassengerCounts
-from .serializers import SubwayPassengerCountSerializer
+from .models import SubwayMonthlyTimeSlotPassengerCounts, SubwayStationLatLng
+from .serializers import SubwayPassengerCountSerializer, SubwayStationLatLngSerializer
 
 
 class SubwayMonthlyPassengerCounterListView(APIView):
@@ -23,3 +23,17 @@ class SubwayMonthlyPassengerCounterListView(APIView):
         serializer = SubwayPassengerCountSerializer(queryset, many=True)
 
         return Response(serializer.data[0])
+
+
+class SubwayStationLatLngListView(APIView):
+    def get(self, request, *args, **kwargs):
+        route_name = request.query_params.get("route_name", None)
+
+        queryset = SubwayStationLatLng.objects.all()
+
+        if route_name:
+            queryset = queryset.filter(route_name=route_name)
+
+        serializer = SubwayStationLatLngSerializer(queryset, many=True)
+
+        return Response(serializer.data)
