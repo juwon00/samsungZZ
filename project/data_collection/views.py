@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import SubwayMonthlyTimeSlotPassengerCounts, SubwayDailyTimeSlotPassengerDifference, SubwayAmenities
-from .serializers import SubwayPassengerCountSerializer, SubwayPassengerDifferenceSerializer, SubwayAmenitiesSerializer
+from .models import SubwayMonthlyTimeSlotPassengerCounts, DegreeOfSubwayCongestion, SubwayDailyTimeSlotPassengerDifference, SubwayAmenities
+from .serializers import SubwayPassengerCountSerializer, DegreeOfSubwayCongestionSerializer, SubwayPassengerDifferenceSerializer, SubwayAmenitiesSerializer
 
 
 class SubwayMonthlyPassengerCounterListView(APIView):
@@ -25,6 +25,26 @@ class SubwayMonthlyPassengerCounterListView(APIView):
 
         return Response(serializer.data[0])
 
+class DegreeOfSubwayCongestionListView(APIView):
+    def get(self, request, *args, **kwargs):
+        week = request.query_params.get("week", None)
+        route_name = request.query_params.get("route_name", None)
+        time = request.query_params.get("time", None)
+
+        queryset = DegreeOfSubwayCongestion.objects.all()
+
+        if route_name:
+            queryset = queryset.filter(route_name=route_name)
+        if week:
+            queryset = queryset.filter(week=week)
+        if time:
+            queryset = queryset.filter(time=time)
+        
+        serializer = DegreeOfSubwayCongestionSerializer(queryset, many=True)
+
+        return Response(serializer.data[0])
+
+      
 class SubwayDailyPassengerDifferenceView(APIView):
     def get(self, request, date, line_number, station_name, time_slot):
         try:
@@ -38,7 +58,7 @@ class SubwayDailyPassengerDifferenceView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except SubwayDailyTimeSlotPassengerDifference.DoesNotExist:
             return Response({"detail":"Not Found"}, status=status.HTTP_404_NOT_FOUND)
-        
+
 class SubwayAmenitiesView(APIView):
     def get(self, request, line_number, station_name):
         try:
