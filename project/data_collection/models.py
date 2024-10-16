@@ -55,3 +55,13 @@ class SubwayMonthlyTimeSlotPassengerCounts(models.Model):
 
     class Meta:
         db_table = "subway_monthly_time_slot_passenger_counts"
+
+class SubwayDailyTimeSlotPassengerDifference(models.Model):
+    date = models.DateField() 
+    line_number = models.CharField(max_length=10)
+    station_name = models.CharField(max_length=10)
+    time_slot = models.CharField(max_length=20)
+    difference = models.IntegerField()
+
+    class Meta:
+        db_table = "subway_daily_time_slot_passenger_difference"
