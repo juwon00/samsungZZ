@@ -66,6 +66,22 @@ class SubwayDailyPassengerDifferenceView(APIView):
                 return latitude, longitude
         return None, None 
     
+    def create_default_map(self):
+        #서울 중심을 기준으로 Folium 지도 초기화.
+        return folium.Map(location=[37.5665, 126.9780], zoom_start=11)
+    
+    def draw_passenger_difference(self, subway_map, station_name, difference, latitude, longitude):
+        #승하차 인원 차이에 따라 CircleMarker를 Folium 지도에 추가.
+        color = 'blue' if difference > 0 else 'red'
+        folium.CircleMarker(
+            location=[float(latitude), float(longitude)],
+            radius=abs(difference) / 100,  # 차이에 비례한 원 크기
+            popup=station_name,
+            color=color,
+            fill=True,
+            fill_opacity=0.7
+        ).add_to(subway_map)
+
     def get(self, request, date, line, sttn, time_slot):
         try:
             # 모든 역의 데이터를 가져옵니다.
@@ -76,28 +92,30 @@ class SubwayDailyPassengerDifferenceView(APIView):
                 time_slot=time_slot
             )
             
-            subway_map = folium.Map(location=[37.5665, 126.9780], zoom_start=11)  # 서울 중심 좌표
+            # 기본 지도 생성
+            subway_map = self.create_default_map()
             
             for data in data_list:
+                # Kakao API를 이용해 좌표 가져오기
                 latitude, longitude = self.get_coordinates_from_kakao(data.sttn)
+                
                 if latitude and longitude:
-                    # 좌표를 데이터에 추가 및 저장
+                    # 데이터에 좌표 저장
                     data.latitude = latitude
                     data.longitude = longitude
                     data.save()
-                    
-                serializer = SubwayPassengerDifferenceSerializer(data)
-                
-                folium.CircleMarker(
-                    location=[float(serializer.data["latitude"]), float(serializer.data["longitude"])],
-                    radius=abs(serializer.data["difference"]) / 100,
-                    popup=serializer.data["sttn"],
-                    color='blue' if serializer.data["difference"] > 0 else 'red',
-                    fill=True,
-                    fill_opacity=0.7
-                ).add_to(subway_map)
 
-            # Folium 지도를 HTML로 변환
+                    # 역별 인원 차이 데이터를 시각화
+                    serializer = SubwayPassengerDifferenceSerializer(data)
+                    self.draw_passenger_difference(
+                        subway_map=subway_map,
+                        station_name=serializer.data["sttn"],
+                        difference=serializer.data["difference"],
+                        latitude=serializer.data["latitude"],
+                        longitude=serializer.data["longitude"]
+                    )
+
+            # Folium 지도를 HTML로 변환 후 렌더링
             map_html = subway_map._repr_html_()
             return render(request, "data_collection/map.html", {"map_html": map_html})
 
