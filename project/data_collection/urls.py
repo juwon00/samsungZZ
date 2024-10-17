@@ -14,11 +14,11 @@ urlpatterns = [
         name="degree-of-subway-congestion-list",
     ),
     path(
-        'api/subway-daily-passenger-difference/<str:date>/<str:line_number>/<str:station_name>/<str:time_slot>/', 
+        'api/subway-daily-passenger-difference/<str:date>/<str:line>/<str:sttn>/<str:time_slot>/', 
         SubwayDailyPassengerDifferenceView.as_view(),
     ),
     path(
-        'api/subway-amenities/<str:line_number>/<str:station_name>/',
+        'api/subway-amenities/<str:line>/<str:sttn>/',
         SubwayAmenitiesView.as_view()
     ),
 ]

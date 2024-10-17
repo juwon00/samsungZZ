@@ -14,8 +14,8 @@ class Command(BaseCommand):
         for i, row in df.iterrows():
             SubwayDailyTimeSlotPassengerDifference.objects.update_or_create(
                 date=row['날짜'],
-                line_number=row['호선'],
-                station_name=row['역명'],
+                line=row['호선'],
+                sttn=row['역명'],
                 time_slot=row['시간대'],
                 defaults={'difference': row['승차_하차_차이']}
             )

@@ -13,8 +13,8 @@ class Command(BaseCommand):
 
         for i, row in df.iterrows():
             SubwayAmenities.objects.update_or_create(
-                line_number=row['호선'],
-                station_name=row['역명'],
+                line=row['호선'],
+                sttn=row['역명'],
                 
                 culture_space=row['문화공간여부'],
                 wheelchair_lift=row['휠체어리프트여부'],

@@ -26,7 +26,7 @@ class DegreeOfSubwayCongestionSerializer(serializers.ModelSerializer):
 class SubwayPassengerDifferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubwayDailyTimeSlotPassengerDifference
-        fields = ['date', 'line_number', 'station_name', 'time_slot', 'difference']
+        fields = ['date', 'line', 'sttn', 'time_slot', 'difference']
 
 
 class SubwayAmenitiesSerializer(serializers.ModelSerializer):

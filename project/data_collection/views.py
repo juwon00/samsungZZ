@@ -44,14 +44,13 @@ class DegreeOfSubwayCongestionListView(APIView):
 
         return Response(serializer.data[0])
 
-      
 class SubwayDailyPassengerDifferenceView(APIView):
-    def get(self, request, date, line_number, station_name, time_slot):
+    def get(self, request, date, line, sttn, time_slot):
         try:
             data = SubwayDailyTimeSlotPassengerDifference.objects.get(
                 date=date,
-                line_number=line_number,
-                station_name=station_name,
+                line=line,
+                sttn=sttn,
                 time_slot=time_slot
             )
             serializer = SubwayPassengerDifferenceSerializer(data)
@@ -60,11 +59,11 @@ class SubwayDailyPassengerDifferenceView(APIView):
             return Response({"detail":"Not Found"}, status=status.HTTP_404_NOT_FOUND)
 
 class SubwayAmenitiesView(APIView):
-    def get(self, request, line_number, station_name):
+    def get(self, request, line, sttn):
         try:
             data = SubwayAmenities.objects.get(
-                line_number=line_number,
-                station_name=station_name,
+                line=line,
+                sttn=sttn,
             )
             serializer = SubwayAmenitiesSerializer(data)
             return Response(serializer.data, status=status.HTTP_200_OK)

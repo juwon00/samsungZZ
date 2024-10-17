@@ -72,8 +72,8 @@ class DegreeOfSubwayCongestion(models.Model):
         
 class SubwayDailyTimeSlotPassengerDifference(models.Model):
     date = models.DateField() 
-    line_number = models.CharField(max_length=10)
-    station_name = models.CharField(max_length=10)
+    line = models.CharField(max_length=10)
+    sttn = models.CharField(max_length=10)
     time_slot = models.CharField(max_length=20)
     difference = models.IntegerField()
 
@@ -82,8 +82,8 @@ class SubwayDailyTimeSlotPassengerDifference(models.Model):
 
 
 class SubwayAmenities(models.Model):
-    line_number = models.CharField(max_length=10)
-    station_name = models.CharField(max_length=20)
+    line = models.CharField(max_length=10)
+    sttn = models.CharField(max_length=20)
     
     culture_space = models.CharField(max_length=2)
     wheelchair_lift = models.CharField(max_length=2)
