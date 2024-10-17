@@ -26,10 +26,10 @@ class Command(BaseCommand):
             
             # 현재 페이지의 데이터를 가져옴
             current_data = response_data.get("data", [])
-            data.extend(current_data)  # 모든 데이터를 저장할 리스트에 추가
+            data.extend(current_data)
             
-            # 다음 페이지로 이동 (만약 현재 페이지에 데이터가 없으면 중단)
-            if len(current_data) == 0:
+            # 다음 페이지로 이동 (만약 현재 페이지에 데이터가 없거나, perPage보다 적으면 중단)
+            if len(current_data) == 0 or len(current_data) < params["perPage"]:
                 break
             
             params["page"] += 1  # 다음 페이지로 넘어감
@@ -48,9 +48,6 @@ class Command(BaseCommand):
                 # key값이 '00시 00분' 형태일 때
                 elif match and len(match.group(1)) == 2:
                     new_dict[(match.group(1) + ":" + match.group(2))] = v
-                elif k == '역번호':
-                    # '역번호' value를 4자리로 변경
-                    new_dict['역번호'] = '{0:04d}'.format(v)
                 # '(0)0시 00분' 형태가 아닌 모든 key값은 그대로 유지
                 else:
                     new_dict[k] = v
