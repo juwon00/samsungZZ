@@ -72,14 +72,14 @@ class SubwayDailyPassengerDifferenceView(APIView):
             data_list = SubwayDailyTimeSlotPassengerDifference.objects.filter(
                 date=date,
                 line=line,
-                sttn=sttn,
+                # sttn=sttn,
                 time_slot=time_slot
             )
             
             subway_map = folium.Map(location=[37.5665, 126.9780], zoom_start=11)  # 서울 중심 좌표
             
             for data in data_list:
-                latitude, longitude = self.get_coordinates_from_kakao(data.station_name)
+                latitude, longitude = self.get_coordinates_from_kakao(data.sttn)
                 if latitude and longitude:
                     # 좌표를 데이터에 추가 및 저장
                     data.latitude = latitude
@@ -91,7 +91,7 @@ class SubwayDailyPassengerDifferenceView(APIView):
                 folium.CircleMarker(
                     location=[float(serializer.data["latitude"]), float(serializer.data["longitude"])],
                     radius=abs(serializer.data["difference"]) / 100,
-                    popup=serializer.data["station_name"],
+                    popup=serializer.data["sttn"],
                     color='blue' if serializer.data["difference"] > 0 else 'red',
                     fill=True,
                     fill_opacity=0.7
