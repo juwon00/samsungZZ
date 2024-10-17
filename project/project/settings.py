@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "visualization",
     "visualization_func2",
+    "visualization_func1",
 ]
 
 MIDDLEWARE = [
