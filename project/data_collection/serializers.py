@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import SubwayMonthlyTimeSlotPassengerCounts, DegreeOfSubwayCongestion, SubwayDailyTimeSlotPassengerDifference
-
+from .models import SubwayMonthlyTimeSlotPassengerCounts, DegreeOfSubwayCongestion, SubwayDailyTimeSlotPassengerDifference, SubwayAmenities
 
 
 class SubwayPassengerCountSerializer(serializers.ModelSerializer):
@@ -27,5 +26,10 @@ class DegreeOfSubwayCongestionSerializer(serializers.ModelSerializer):
 class SubwayPassengerDifferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubwayDailyTimeSlotPassengerDifference
-        fields = ['date', 'line_number', 'station_name', 'time_slot', 'difference']
+        fields = ['date', 'line', 'sttn', 'time_slot', 'difference']
 
+
+class SubwayAmenitiesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubwayAmenities
+        fields = "__all__"
