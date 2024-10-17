@@ -8,7 +8,7 @@ class Command(BaseCommand):
     help = "Subway latitude and longitude data fetcher"
 
     def get_lat_lon(self, addr):
-        api_key = "4408c2262908b5c0a96f61beee8e80f2"
+        api_key = ""
         headers = {"Authorization": f"KakaoAK {api_key}"}  # REST API 키(유효한 키)
         url = f"https://dapi.kakao.com/v2/local/search/keyword.json?query={addr}"
         result = requests.get(url, headers=headers).json()
