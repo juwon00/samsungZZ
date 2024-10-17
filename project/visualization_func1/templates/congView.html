@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>혼잡도 정보</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        /* 지도 크기 지정 */
+        #map {
+            height: 600px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>지하철 혼잡도 등급</h1>
+
+    <!-- 필터링 폼 -->
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">조회</button>
+    </form>
+
+    {% if result_data %}
+        <!-- 혼잡도 데이터를 테이블로 표시 -->
+        <table>
+            <thead>
+                <tr>
+                    <th>역 이름</th>
+                    <th>호선</th>
+                    <th>시간대</th>
+                    <th>혼잡도 등급</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data, grade in result_data %}
+                <tr>
+                    <td>{{ data.sub_name }}</td>
+                    <td>{{ data.route_name }}</td>
+                    <td>{{ data.time }}</td>
+                    <td>{{ grade }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- 지도 표시 -->
+        <div id="map"></div>
+
+        <!-- Leaflet 지도 스크립트 -->
+        <script>
+            // Leaflet.js를 사용하여 지도 초기화 (서울시 중심 좌표)
+            var map = L.map('map').setView([37.5665, 126.9780], 11); // 서울시 중심 좌표
+
+            // OpenStreetMap 타일 레이어 추가
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // 혼잡도 데이터를 백엔드에서 가져와 지도에 마커로 표시
+            var data = {{ result_data|safe }};  // 백엔드에서 전달받은 데이터
+
+            // 혼잡도에 따라 색상을 설정하는 함수
+            function getColor(grade) {
+                if (grade == 1) return 'green';
+                if (grade == 2) return 'yellow';
+                if (grade == 3) return 'orange';
+                if (grade == 4) return 'red';
+                return 'gray';  // 기본 색상 (데이터가 없을 경우)
+            }
+
+            // 혼잡도 데이터를 순회하며 지도에 마커 추가
+            data.forEach(function(item) {
+                var station = item[0];  // 지하철 역 정보
+                var grade = item[1];    // 혼잡도 등급
+
+                // 각 역 좌표에 원형 마커 추가
+                var marker = L.circleMarker([station.latitude, station.longitude], {
+                    color: getColor(grade),  // 혼잡도에 따른 색상
+                    radius: 10,              // 마커 크기
+                    fillOpacity: 0.8
+                }).addTo(map);
+
+                // 마커에 팝업 정보 추가 (역 이름 및 혼잡도 등급)
+                marker.bindPopup(`<b>${station.name}</b><br>혼잡도: ${grade}`);
+            });
+        </script>
+    {% else %}
+        <p>조회된 데이터가 없습니다.</p>
+    {% endif %}
+</body>
+</html>
