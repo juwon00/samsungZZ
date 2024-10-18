@@ -1,5 +1,11 @@
 from django.urls import path
-from .views import SubwayMonthlyPassengerCounterListView, DegreeOfSubwayCongestionListView, SubwayDailyPassengerDifferenceView, SubwayAmenitiesView
+from .views import (
+    SubwayMonthlyPassengerCounterListView,
+    DegreeOfSubwayCongestionListView,
+    SubwayDailyPassengerDifferenceView,
+    SubwayAmenitiesView,
+    SubwayStationLatLngListView,
+)
 
 
 urlpatterns = [
@@ -14,11 +20,13 @@ urlpatterns = [
         name="degree-of-subway-congestion-list",
     ),
     path(
-        'api/subway-daily-passenger-difference/<str:date>/<str:line>/<str:sttn>/<str:time_slot>/', 
+        "api/subway-daily-passenger-difference/<str:date>/<str:line>/<str:sttn>/<str:time_slot>/",
         SubwayDailyPassengerDifferenceView.as_view(),
     ),
+    path("api/subway-amenities/<str:line>/<str:sttn>/", SubwayAmenitiesView.as_view()),
     path(
-        'api/subway-amenities/<str:line>/<str:sttn>/',
-        SubwayAmenitiesView.as_view()
+        "api/subway-station-lat-lng-list/",
+        SubwayStationLatLngListView.as_view(),
+        name="subway-station-lat-lng-list",
     ),
 ]

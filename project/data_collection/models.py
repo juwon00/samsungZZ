@@ -59,19 +59,19 @@ class SubwayMonthlyTimeSlotPassengerCounts(models.Model):
 
 class DegreeOfSubwayCongestion(models.Model):
     sub_name = models.CharField(max_length=20)  # 지하철역 이름
-    sub_num = models.IntegerField() # 지하철역 번호
-    route_name = models.CharField(max_length=20)    # 노선명
+    sub_num = models.IntegerField()  # 지하철역 번호
+    route_name = models.CharField(max_length=20)  # 노선명
     week = models.CharField(max_length=10)  # 요일 구분
     time = models.CharField(max_length=10)  # 시간대 구분
-    congestion = models.FloatField(null=True)    # 혼잡도
+    congestion = models.FloatField(null=True)  # 혼잡도
 
     class Meta:
         # 모델이 데이터베이스에서 사용할 이름
         db_table = "degree_of_subway_congestion"
 
-        
+
 class SubwayDailyTimeSlotPassengerDifference(models.Model):
-    date = models.DateField() 
+    date = models.DateField()
     line = models.CharField(max_length=10)
     sttn = models.CharField(max_length=10)
     time_slot = models.CharField(max_length=20)
@@ -84,7 +84,6 @@ class SubwayDailyTimeSlotPassengerDifference(models.Model):
 class SubwayAmenities(models.Model):
     line = models.CharField(max_length=10)
     sttn = models.CharField(max_length=20)
-    
     culture_space = models.CharField(max_length=2)
     wheelchair_lift = models.CharField(max_length=2)
     meeting_place = models.CharField(max_length=2)
@@ -98,3 +97,13 @@ class SubwayAmenities(models.Model):
 
     class Meta:
         db_table = "subway_amenities"
+
+
+class SubwayStationLatLng(models.Model):
+    route_name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    class Meta:
+        db_table = "subway_station_lat_lng"
