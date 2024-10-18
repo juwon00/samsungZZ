@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views
+from .views import congestion_view
 
 # 임의로 확인할 url 생성
 urlpatterns = [
-    path('congestion/', views.congestion_view, name='congestion_view'),
+    path('congestion/', congestion_view, name='congestion_view'),
 ]

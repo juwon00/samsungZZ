@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>혼잡도 정보</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        /* 지도 크기 지정 */
+        #map {
+            height: 600px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>지하철 혼잡도 등급</h1>
+
+    <!-- 필터링 폼 -->
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">조회</button>
+    </form>
+
+    <!-- 혼잡도 데이터가 없을 때 표시 -->
+    {% if result_data %}
+        <!-- 혼잡도 데이터를 테이블로 표시 -->
+        <table>
+            <thead>
+                <tr>
+                    <th>역 이름</th>
+                    <th>호선</th>
+                    <th>평일/주말</th>
+                    <th>시간대</th>
+                    <th>혼잡도 등급</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in result_data %}
+                <tr>
+                    <td>{{ data.sub_name }}</td> 
+                    <td>{{ data.route_name }}</td>
+                    <td>{{ data.week }}</td>
+                    <td>{{ data.time }}</td>
+                    <td>{{ data.grade }}</td> 
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>조회된 데이터가 없습니다.</p>
+    {% endif %}
+
+    <!-- 지도 표시 -->
+    <div id="map"></div>
+
+    <!-- Leaflet.js를 사용하여 지도 초기화 (서울시 중심 좌표) -->
+    <script>
+        var map = L.map('map').setView([37.5665, 126.9780], 11); // 서울시 중심 좌표
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    </script>
+</body>
+</html>
