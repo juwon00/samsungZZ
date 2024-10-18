@@ -76,6 +76,8 @@ class SubwayDailyTimeSlotPassengerDifference(models.Model):
     sttn = models.CharField(max_length=10)
     time_slot = models.CharField(max_length=20)
     difference = models.IntegerField()
+    latitude = models.FloatField(default=37.5665) #latitude, longitude의 null값 방지를 위해
+    longitude = models.FloatField(default=126.9780) #임의로 서울시청역 좌표를 디폴트 설정
 
     class Meta:
         db_table = "subway_daily_time_slot_passenger_difference"

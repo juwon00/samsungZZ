@@ -22,6 +22,7 @@ urlpatterns = [
     path(
         "api/subway-daily-passenger-difference/<str:date>/<str:line>/<str:sttn>/<str:time_slot>/",
         SubwayDailyPassengerDifferenceView.as_view(),
+        name='subway-daily-passenger-difference'
     ),
     path("api/subway-amenities/<str:line>/<str:sttn>/", SubwayAmenitiesView.as_view()),
     path(
