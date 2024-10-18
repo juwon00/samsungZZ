@@ -13,8 +13,8 @@ class congestionForm(forms.Form):
     week = forms.ChoiceField(
         choices=[
             ("평일", "평일"),
-            ("토요일", "주말"),
-            ("일요일", "주말")
+            ("토요일", "토요일"),
+            ("일요일", "일요일")
         ],
         label="평일/주말"
     )

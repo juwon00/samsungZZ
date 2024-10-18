@@ -13,9 +13,10 @@ def congestion_view(request):
     form = congestionForm()
     filtering_data = None
     grades = None
+    result_data = []
     
 
-    if request.method in ['POST']:
+    if request.method == 'POST':
         form = congestionForm(request.POST)
     
         if form.is_valid():
@@ -59,9 +60,6 @@ def congestion_view(request):
         else:
             print("Form Errors: ", form.errors)
     
-    # 각 지하철 역에 대한 좌표 및 혼잡도 등급 연결
-    result_data = []
-    
     # for data, grade in zip(filtering_data, grades):
         # 역 좌표 정보 가져오기
         # 데이터 병합 필요합니다.
@@ -77,7 +75,6 @@ def congestion_view(request):
                 'route_name': data.route_name,
                 'week': data.week,
                 'time': data.time,
-                'congestion': data.congestion,
                 'grade': grade,
             })
             
