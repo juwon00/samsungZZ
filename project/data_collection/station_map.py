@@ -1,6 +1,7 @@
 import folium
 import requests
 from collections import deque
+from .models import SubwayStationLatLng
 
 class StationMap :
     def __init__(self, api_key = "4408c2262908b5c0a96f61beee8e80f2") :
@@ -468,14 +469,19 @@ class StationMap :
         return sum_a/len(points), sum_b/len(points)
     
     def __get_lat_lon(self, addr) :
-        
-        headers = {"Authorization": f'KakaoAK {self.api_key}'} #REST API 키(유효한 키)
-        url = f'https://dapi.kakao.com/v2/local/search/keyword.json?query={addr}'
-        result = requests.get(url, headers = headers).json()
-        
-        lat = float(result['documents'][0]['y'])
-        lon = float(result['documents'][0]['x'])
-        
-        return lat, lon
+        stations = SubwayStationLatLng.objects.filter(name=addr)
+    
+        if stations.exists():  # 존재 여부 확인
+            # 첫 번째 지하철역의 위도와 경도를 반환
+            return stations.first().latitude, stations.first().longitude
+        else : 
+            headers = {"Authorization": f'KakaoAK {self.api_key}'} #REST API 키(유효한 키)
+            url = f'https://dapi.kakao.com/v2/local/search/keyword.json?query={addr}'
+            result = requests.get(url, headers = headers).json()
+            
+            lat = float(result['documents'][0]['y'])
+            lon = float(result['documents'][0]['x'])
+            
+            return lat, lon
         
         
