@@ -2,11 +2,24 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import SubwayMonthlyTimeSlotPassengerCounts, DegreeOfSubwayCongestion, SubwayDailyTimeSlotPassengerDifference, SubwayAmenities
-from .serializers import SubwayPassengerCountSerializer, DegreeOfSubwayCongestionSerializer, SubwayPassengerDifferenceSerializer, SubwayAmenitiesSerializer
 import requests
 import re
 import folium
+from .models import (
+    SubwayMonthlyTimeSlotPassengerCounts,
+    DegreeOfSubwayCongestion,
+    SubwayDailyTimeSlotPassengerDifference,
+    SubwayAmenities,
+    SubwayStationLatLng,
+)
+from .serializers import (
+    SubwayPassengerCountSerializer,
+    DegreeOfSubwayCongestionSerializer,
+    SubwayPassengerDifferenceSerializer,
+    SubwayAmenitiesSerializer,
+    SubwayStationLatLngSerializer,
+)
+
 
 class SubwayMonthlyPassengerCounterListView(APIView):
     def get(self, request, *args, **kwargs):
@@ -27,6 +40,7 @@ class SubwayMonthlyPassengerCounterListView(APIView):
 
         return Response(serializer.data[0])
 
+
 class DegreeOfSubwayCongestionListView(APIView):
     def get(self, request, *args, **kwargs):
         week = request.query_params.get("week", None)
@@ -41,7 +55,7 @@ class DegreeOfSubwayCongestionListView(APIView):
             queryset = queryset.filter(week=week)
         if time:
             queryset = queryset.filter(time=time)
-        
+
         serializer = DegreeOfSubwayCongestionSerializer(queryset, many=True)
 
         return Response(serializer.data)
@@ -85,11 +99,8 @@ class SubwayDailyPassengerDifferenceView(APIView):
     def get(self, request, date, line, sttn, time_slot):
         try:
             # 모든 역의 데이터를 가져옵니다.
-            data_list = SubwayDailyTimeSlotPassengerDifference.objects.filter(
-                date=date,
-                line=line,
-                # sttn=sttn,
-                time_slot=time_slot
+            data = SubwayDailyTimeSlotPassengerDifference.objects.get(
+                date=date, line=line, sttn=sttn, time_slot=time_slot
             )
             
             # 기본 지도 생성
@@ -120,7 +131,8 @@ class SubwayDailyPassengerDifferenceView(APIView):
             return render(request, "data_collection/map.html", {"map_html": map_html})
 
         except SubwayDailyTimeSlotPassengerDifference.DoesNotExist:
-            return Response({"detail":"Not Found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Not Found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 class SubwayAmenitiesView(APIView):
     def get(self, request, line, sttn):
@@ -132,4 +144,18 @@ class SubwayAmenitiesView(APIView):
             serializer = SubwayAmenitiesSerializer(data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except SubwayAmenities.DoesNotExist:
-            return Response({"detail":"Not Found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Not Found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class SubwayStationLatLngListView(APIView):
+    def get(self, request, *args, **kwargs):
+        route_name = request.query_params.get("route_name", None)
+
+        queryset = SubwayStationLatLng.objects.all()
+
+        if route_name:
+            queryset = queryset.filter(route_name=route_name)
+
+        serializer = SubwayStationLatLngSerializer(queryset, many=True)
+
+        return Response(serializer.data)
