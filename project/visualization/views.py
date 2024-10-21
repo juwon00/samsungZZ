@@ -8,17 +8,16 @@ import io
 import urllib, base64
 import matplotlib.font_manager as fm
 import numpy as np
-from django.http import JsonResponse
 
 
 def subway_passenger_graph(request):
     graph = None
     error_message = None
     station = None
-    max_get_on_count = None
-    max_get_on_time = None
-    max_get_off_count = None
-    max_get_off_time = None
+    max_get_on_count = '-'
+    max_get_on_time = '-'
+    max_get_off_count = '-'
+    max_get_off_time = '-'
     if request.method == 'POST':
         form = SubwayDataForm(request.POST)
         if form.is_valid():
@@ -48,7 +47,7 @@ def subway_passenger_graph(request):
                 plt.rc('font', family='Malgun Gothic')
                 plt.rcParams['axes.unicode_minus'] = False
                 # 그래프 그리기
-                fig, ax = plt.subplots(figsize=(10, 5))
+                fig, ax = plt.subplots(figsize=(8, 4))
                 width = 0.35
                 x = np.arange(len(times))
 
