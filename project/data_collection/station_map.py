@@ -479,9 +479,12 @@ class StationMap :
             url = f'https://dapi.kakao.com/v2/local/search/keyword.json?query={addr}'
             result = requests.get(url, headers = headers).json()
             
-            lat = float(result['documents'][0]['y'])
-            lon = float(result['documents'][0]['x'])
+            if result.get('documents'):
+                lat = float(result['documents'][0]['y'])
+                lon = float(result['documents'][0]['x'])
             
-            return lat, lon
+                return lat, lon
+            else:
+                return None, None
         
         
