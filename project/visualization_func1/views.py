@@ -5,6 +5,7 @@ from data_collection.models import DegreeOfSubwayCongestion
 from .forms import congestionForm
 import numpy as np
 from django.views.decorators.csrf import csrf_exempt
+from data_collection.station_map import StationMap
 
 @csrf_exempt 
 
@@ -66,9 +67,12 @@ def congestion_view(request):
         # station = Station.objects.get(name=data.station_name)
         # result_data.append((station, grade)) 
     
+    station_map = StationMap()
     # 필터링된 데이터와 혼잡도 등급을 연결
     if filtering_data and grades:
         for data, grade in zip(filtering_data, grades):
+            # 위도, 경도 값 탐색
+            latitude, longitude = station_map._StationMap__get_lat_lon(addr=data.sub_name)
             # 필요한 필드를 추출하여 딕셔너리로 변환
             result_data.append({
                 'sub_name' : data.sub_name,
@@ -76,6 +80,8 @@ def congestion_view(request):
                 'week': data.week,
                 'time': data.time,
                 'grade': grade,
+                'latitude': latitude,
+                'longitude': longitude,
             })
             
     context = {

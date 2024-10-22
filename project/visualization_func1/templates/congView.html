@@ -76,13 +76,45 @@
 
     <!-- 지도 표시 -->
     <div id="map"></div>
-
-    <!-- Leaflet.js를 사용하여 지도 초기화 (서울시 중심 좌표) -->
     <script>
+        // 혼잡도에 따라 색상을 결정하는 함수
+        function getColorByGrade(grade) {
+            if (grade === 1) return 'green';
+            else if (grade === 2) return 'yellow';
+            else if (grade === 3) return 'orange';
+            else if (grade === 4) return 'red';
+            return 'gray';  // 데이터가 없을 경우 회색 표시
+        }
+
+        // Leaflet.js를 사용하여 지도 초기화 (서울시 중심 좌표)
         var map = L.map('map').setView([37.5665, 126.9780], 11); // 서울시 중심 좌표
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
+
+        // 서버에서 전달된 필터링된 데이터 (역의 이름, 위도, 경도, 혼잡도 등급)
+    var resultData = {{ result_data|safe }};
+
+        // 각 역을 지도에 표시
+        resultData.forEach(function(data) {
+            if (data.latitude && data.longitude) {
+                // 각 역의 위도와 경도에 혼잡도 등급에 따른 원(circle)을 추가
+                var circle = L.circleMarker([data.latitude, data.longitude], {
+                    radius: 8,  // 점의 크기
+                    color: getColorByGrade(data.grade),  // 혼잡도에 따른 색상
+                    fillColor: getColorByGrade(data.grade),  // 채우기 색상
+                    fillOpacity: 0.7,  // 채우기 투명도
+                    weight: 2  // 테두리 두께
+                }).addTo(map);
+
+                // 마커에 팝업 정보 추가 (역 이름과 혼잡도 등급 표시)
+                circle.bindPopup(`
+                    <strong>${data.sub_name}</strong><br>
+                    호선: ${data.route_name}<br>
+                    혼잡도 등급: ${data.grade}
+                `);
+            }
+        });
     </script>
 </body>
 </html>
