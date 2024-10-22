@@ -5,11 +5,11 @@
 * url: `/func1/congestion`
   
 * function: 세 가지 드롭 다운에 필요한 값을 모두 선택하면 출력됩니다.
-
-* 혼잡도 등급: 1~4까지 존재하며 순서대로 초록, 노랑, 주황, 빨강색으로 표시됩니다. 존재하지 않는 값은 회색으로 표시됩니다.
+  
+* `혼잡도 등급`: 1~4까지 존재하며 순서대로 초록, 노랑, 주황, 빨강색으로 표시됩니다. 존재하지 않는 값은 회색으로 표시됩니다.
 
 * 원 위에 커서를 대면 팝업창으로 해당 역에 대한 정보가 간소화되어 표시됩니다.
 
 * 조회를 누른 후 시간이 조금 소요될 수 있으므로 양해 부탁드립니다!
 
-<img width="388" alt="image" src="https://github.com/user-attachments/assets/5014937c-8862-4be7-8973-d25beb2065a9">
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/5014937c-8862-4be7-8973-d25beb2065a9">
