@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "visualization",
-    "visualization_func2",
     "visualization_func1",
 ]
 
