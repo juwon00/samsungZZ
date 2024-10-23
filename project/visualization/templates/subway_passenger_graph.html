@@ -2,33 +2,102 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>지하철 시간대별 승하차인원</title>
+    <h2>지하철역 시간대별 승하차인원 및 편의시설 정보</h2>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .form-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 5px;
+            background-color: beige;
+            border: 1px solid #ccc;
+            margin-bottom: 5px;
+            width: 1000px;
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .graph-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .graph-description {
+            margin-left: 10px;
+            margin-top: 20px;
+        }
+        .amenities-section {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            padding: 5px;
+            background-color: bisque;
+            border: 1px solid #ccc;
+            margin-bottom: 5px;
+            width: 1000px;
+        }
+        .amenities-section img {
+            margin: 5px;
+
+        }
+    </style>
 </head>
 <br>
 <body>
-    <form method="post" id="subway-from">
-        {% csrf_token %}
-        {{ form.line }}
-        {{ form.sttn }}
-        <button type="submit">조회</button>
-    </form>
+    <div class="container">
+        <div class="form-section">
+            <h3>지하철역 선택</h3>
+            <div class="form-row">
+                <form method="post" id="subway-from">
+                    {% csrf_token %}
+                    {{ form.line }}
+                    {{ form.sttn }}
+                    <button type="submit">조회</button>
+                </form>
+            </div>
 
+            {% if error_message %}
+                <p style="color: red;">{{ error_message }}</p>
+            {% endif %}
+        </div>
+        <div class="amenities-section">
+            <h3>편의시설 정보 : </h3>
+            <br />
+            {% if station %}
+                {% if station.cultural_space == 'Y' %}<img src="/static/icons/01_cultural_space.png" width="50" height="50" alt="문화공간">{% endif %}
+                {% if station.wheelchair_lift == 'Y' %}<img src="/static/icons/02_wheelchair_lift.png" width="50" height="50" alt="휠체어리프트">{% endif %}
+                {% if station.meeting_place == 'Y' %}<img src="/static/icons/03_meeting_spot.png" width="50" height="50" alt="만남의장소">{% endif %}
+                {% if station.transfer_parking_lot == 'Y' %}<img src="/static/icons/04_parking_lot.png" width="50" height="50" alt="환승주차장">{% endif %}
+                {% if station.bicycle_storage == 'Y' %}<img src="/static/icons/05_bike_rack.png" width="50" height="50" alt="자전거보관소">{% endif %}
+                {% if station.elevator == 'Y' %}<img src="/static/icons/06_elevator.png" width="50" height="50" alt="엘리베이터">{% endif %}
+                {% if station.train_reservation == 'Y' %}<img src="/static/icons/07_ticket_office.png" width="50" height="50" alt="기차예매역">{% endif %}
+                {% if station.civil_service_machine == 'Y' %}<img src="/static/icons/08_civil_service.png" width="50" height="50" alt="무인민원발급기">{% endif %}
+                {% if station.exchange_kiosk == 'Y' %}<img src="/static/icons/09_currency_exchange.png" width="50" height="50" alt="환전키오스크">{% endif %}
+                {% if station.nursing_room == 'Y' %}<img src="/static/icons/10_nursing_room.png" width="50" height="50" alt="수유실">{% endif %}
+            {% else %}
+                <p>해당 역의 편의시설 정보가 없습니다.</p>
+            {% endif %}
+        </div>
+    </div>
 
-    {% if error_message %}
-        <p style="color: red;">{{ error_message }}</p>
-    {% endif %}
-    {% if station.cultural_space %}<img src="/static/icons/01_cultural_space.png" width="40" height="40" alt="문화공간">{% endif %}
-    {% if station.wheelchair_lift %}<img src="/static/icons/02_wheelchair_lift.png" width="40" height="40" alt="휠체어리프트">{% endif %}
-    {% if station.meeting_spot %}<img src="/static/icons/03_meeting_spot.png" width="40" height="40" alt="만남의장소">{% endif %}
-    {% if station.parking_lot %}<img src="/static/icons/04_parking_lot.png" width="40" height="40" alt="환승주차장">{% endif %}
-    {% if station.bike_rack %}<img src="/static/icons/05_bike_rack.png" width="40" height="40" alt="자전거보관소">{% endif %}
-    {% if station.elevator %}<img src="/static/icons/06_elevator.png" width="40" height="40" alt="엘리베이터">{% endif %}
-    {% if station.ticket_office %}<img src="/static/icons/07_ticket_office.png" width="40" height="40" alt="기차예매역">{% endif %}
-    {% if station.civil_service %}<img src="/static/icons/08_civil_service.png" width="40" height="40" alt="무인민원발급기">{% endif %}
-    {% if station.currency_exchange %}<img src="/static/icons/09_currency_exchange.png" width="40" height="40" alt="환전키오스크">{% endif %}
-    {% if station.nursing_room %}<img src="/static/icons/10_nursing_room.png" width="40" height="40" alt="수유실">{% endif %}
-    {% if graph %}
-        <img src="{{ graph }}" alt="승하차 인원수 그래프">
-    {% endif %}
+    <div class="graph-section">
+        {% if graph %}
+            <img src="{{ graph }}" alt="승하차 인원수 그래프">
+        {% endif %}
+        <div class="graph-description">
+            <p>승차 인원이 가장 많은 시간대는 <b>{{ max_get_on_time }}</b>이고, 약 <b>{{ max_get_on_count }}명</b>이 승차합니다.</p>
+            <p>하차 인원이 가장 많은 시간대는 <b>{{ max_get_off_time }}</b>이고, 약 <b>{{ max_get_off_count }}명</b>이 하차합니다.</p>
+        </div>
+    </div>
+
+    
 </body>
 </html>
