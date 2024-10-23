@@ -19,5 +19,8 @@
 * 예시 화면
 ![스크린샷 2024-10-21 222927](https://github.com/user-attachments/assets/6e7b8ae3-2bc4-4eb2-9268-8cce9751c99d)
 
+* http://127.0.0.1:8000/data-collection/api/subway-daily-passenger-difference/날짜/호선/역명/시간대/ (예시. http://127.0.0.1:8000/data-collection/api/subway-daily-passenger-difference/2024-05-01/1호선/서울역/07시-08시/)
+* 예시 화면
+![image](https://github.com/user-attachments/assets/aa0c8b0a-19fe-4173-a251-f465ac99f796)
 
-   
+  
