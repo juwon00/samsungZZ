@@ -1,5 +1,40 @@
 # samsungZZ
 
+### open api 다루기
+#### 로드
+<ol>
+
+<li>지하철 역별 시간대별 승하차인원 데이터 로드
+<li>터미널에서 다음을 실행: <code>python manage.py fetch_subway_data</code>
+<li>잘못된 데이터 삭제
+<details>
+    <summary>sql 쿼리</summary>
+<pre><code>
+delete from subway_monthly_time_slot_passenger_counts where line == "1호선" and sttn == "서빙고";
+delete from subway_monthly_time_slot_passenger_counts where line == "1호선" and sttn == "한남";
+delete from subway_monthly_time_slot_passenger_counts where line == "1호선" and sttn == "옥수";
+delete from subway_monthly_time_slot_passenger_counts where line == "1호선" and sttn == "응봉";
+delete from subway_monthly_time_slot_passenger_counts where line == "1호선" and sttn == "이촌(국립중앙박물관)";
+delete from subway_monthly_time_slot_passenger_counts where line == "1호선" and sttn == "왕십리(성동구청)";
+</code></pre>
+</details>
+</ol>
+
+
+1. 지하철 역별 위도 경도 데이터 로드
+2. 터미널에서 다음을 실행: `python manage.py fetch_subway_lat_lng_data`
+
+#### 초기화
+<ol>
+<li>지하철 역별 시간대별 승하차인원 데이터 초기화
+<li>터미널에서 <code>sqlite3 db.sqlite3</code>
+<li><code>delete from subway_monthly_time_slot_passenger_counts</code>
+</ol>
+
+1. 지하철 역별 위도 경도 데이터 초기화
+2. 터미널에서 `sqlite3 db.sqlite3`
+3. `delete from subway_station_lat_lng`
+
 ### csv 파일 다루기
 #### 로드
 1. `data_collection/manage/load_csv.py`에서 로드하고 싶은 csv 파일 경로 입력
