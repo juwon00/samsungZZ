@@ -5,6 +5,7 @@ from data_collection.models import DegreeOfSubwayCongestion
 from .forms import congestionForm
 import numpy as np
 from django.views.decorators.csrf import csrf_exempt
+from data_collection.station_map import StationMap
 
 @csrf_exempt 
 
@@ -47,16 +48,17 @@ def congestion_view(request):
                 
             grades = []
             for congestion in congestion_list:
-                if congestion is None: # 혼잡도가 None인 경우 등급도 None
+                if congestion is None:  # 혼잡도가 None인 경우 등급도 None
                     grades.append(None)
-                elif congestion < avg_congestion - std_congestion:
+                elif congestion < avg_congestion - 2 * std_congestion:
                     grades.append(1)
-                elif avg_congestion - std_congestion <= congestion:
+                elif avg_congestion - 2 * std_congestion <= congestion < avg_congestion:
                     grades.append(2)
                 elif avg_congestion <= congestion < avg_congestion + std_congestion:
                     grades.append(3)
                 else:
-                    grades.append(4)
+                    grades.append(4)  # 혼잡도가 평균 + 표준편차 이상일 때 4등급
+
         else:
             print("Form Errors: ", form.errors)
     
@@ -66,9 +68,16 @@ def congestion_view(request):
         # station = Station.objects.get(name=data.station_name)
         # result_data.append((station, grade)) 
     
+    station_map = StationMap()
     # 필터링된 데이터와 혼잡도 등급을 연결
     if filtering_data and grades:
         for data, grade in zip(filtering_data, grades):
+            # 위도, 경도 값 탐색
+            latitude, longitude = station_map._StationMap__get_lat_lon(addr=data.sub_name)
+            
+            if latitude is None or longitude is None:
+                continue
+            
             # 필요한 필드를 추출하여 딕셔너리로 변환
             result_data.append({
                 'sub_name' : data.sub_name,
@@ -76,12 +85,13 @@ def congestion_view(request):
                 'week': data.week,
                 'time': data.time,
                 'grade': grade,
+                'latitude': latitude,
+                'longitude': longitude,
             })
             
     context = {
         'form': form,
         # 필터링된 데이터와 혼잡도 등급 전달
-        # 'result_data': result_data if filtering_data else None,
         'result_data': result_data
     }
     
